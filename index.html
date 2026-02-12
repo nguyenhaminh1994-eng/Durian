@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dodge Runner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="game">
+  <div id="player"></div>
+  <div id="countdown">3</div>
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <h1>DODGE RUNNER</h1>
+    <p>Né chướng ngại càng lâu càng tốt</p>
+    <button id="startBtn">BẮT ĐẦU</button>
+    <div id="bestTime">Best: 0.00s</div>
+  </div>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <div id="time">Time: 0.00s</div>
+</div>
+
+<!-- GAME OVER BOX -->
+<div id="gameOverBox">
+  <h2>💀 Game Over</h2>
+  <p>Thời gian: <span id="finalTime">0</span>s</p>
+  <button id="restartBtn">Chơi lại</button>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
