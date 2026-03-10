@@ -18,6 +18,7 @@ let playerX = window.innerWidth / 2;
 let obstacles = [];
 
 let gameRunning = false;
+let difficulty = 1;
 
 let startTime = 0;
 
@@ -113,54 +114,73 @@ obstacles.push(obstacle);
 }
 
 function gameLoop(){
+    if(!gameRunning) return;
 
-if(!gameRunning) return;
+    let now = Date.now();
+    let time = (now - startTime)/1000;
 
-let now = Date.now();
+    timeEl.innerText = "Time: " + time.toFixed(2) + "s";
 
-let time = (now - startTime)/1000;
+    // tăng độ khó theo mốc thời gian
+    if(time >= 10 && time < 20){
+        difficulty = 2;
+    } else if(time >= 20 && time < 30){
+        difficulty = 3;
+    } else if(time >= 30){
+        difficulty = 4;
+    }
 
-timeEl.innerText = "Time: " + time.toFixed(2) + "s";
+    obstacles.forEach((obs,index)=>{
+        let top = obs.offsetTop;
 
-obstacles.forEach((obs,index)=>{
+        // tốc độ rơi phụ thuộc difficulty
+        obs.style.top = top + (7 * difficulty) + "px";
 
-let top = obs.offsetTop;
+        if(checkCollision(player,obs)){
+            endGame(time);
+        }
 
-obs.style.top = top + 7 + "px";
+        if(top > window.innerHeight){
+            obs.remove();
+            obstacles.splice(index,1);
+        }
+    });
 
-if(checkCollision(player,obs)){
-
-endGame(time);
-
+    requestAnimationFrame(gameLoop);
 }
 
-if(top > window.innerHeight){
 
-obs.remove();
-obstacles.splice(index,1);
 
-}
+function checkCollision(player, obstacle){
+    const p = player.getBoundingClientRect();
+    const o = obstacle.getBoundingClientRect();
 
-});
+    // Tính tâm và bán kính player (hình tròn)
+    const pX = p.left + p.width/2;
+    const pY = p.top + p.height/2;
+    const pRadius = p.width/2;
 
-requestAnimationFrame(gameLoop);
+    // Kiểm tra obstacle có phải hình tròn không (ví dụ class "circle")
+    if(obstacle.classList.contains("circle")){
+        const oX = o.left + o.width/2;
+        const oY = o.top + o.height/2;
+        const oRadius = o.width/2;
 
-}
+        const dx = pX - oX;
+        const dy = pY - oY;
+        const distance = Math.sqrt(dx*dx + dy*dy);
 
-function checkCollision(a,b){
+        return distance < (pRadius + oRadius);
+    } else {
+        // obstacle là hình vuông/rect
+        const nearestX = Math.max(o.left, Math.min(pX, o.right));
+        const nearestY = Math.max(o.top, Math.min(pY, o.bottom));
 
-const r1 = a.getBoundingClientRect();
-const r2 = b.getBoundingClientRect();
+        const dx = pX - nearestX;
+        const dy = pY - nearestY;
 
-return !(
-
-r1.top > r2.bottom ||
-r1.bottom < r2.top ||
-r1.left > r2.right ||
-r1.right < r2.left
-
-);
-
+        return (dx*dx + dy*dy) < (pRadius*pRadius);
+    }
 }
 
 function endGame(time){

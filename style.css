@@ -1,107 +1,116 @@
-body{
-margin:0;
-overflow:hidden;
-font-family:Arial;
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial;
 }
 
-#game{
-position:relative;
-width:100vw;
-height:100vh;
-overflow:hidden;
-background:url("img/BG PLAY (INSIDE).png") center/cover no-repeat;
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: url("img/BG PLAY (INSIDE).png") center/cover no-repeat;
 }
 
-#player{
-position:absolute;
-width:70px;
-height:70px;
-bottom:50px;
-left:50%;
-transform:translateX(-50%);
-background:url("img/ICON DURIAN.png") center/contain no-repeat;
+/* Player hình tròn */
+#player {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: url("img/ICON DURIAN.png") center/contain no-repeat;
+  border-radius: 50%; /* thêm để player là hình tròn */
 }
 
-.obstacle{
-position:absolute;
-width:60px;
-height:60px;
-top:-80px;
-background:url("img/ICON BOOM.png") center/contain no-repeat;
+/* Obstacle mặc định hình vuông */
+.obstacle {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  top: -80px;
+  background: url("img/ICON BOOM.png") center/contain no-repeat;
 }
 
-#startScreen{
-position:absolute;
-width:100%;
-height:100%;
-background:url("img/BG START (OUTSIDE).png") center/cover no-repeat;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:20px;
-z-index:10;
+/* Nếu muốn obstacle hình tròn thì thêm class "circle" */
+.obstacle.circle {
+  border-radius: 50%;
 }
 
-#startBtn{
-margin-top: 300px;
-width:140px;
-cursor:pointer;
-transition:0.2s;
+/* Start screen */
+#startScreen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("img/BG START (OUTSIDE).png") center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 10;
 }
 
-#startBtn:hover{
-transform:scale(1.1);
+#startBtn {
+  margin-top: 300px;
+  width: 140px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-#bestTime{
-margin-bottom: 100px;
-color:white;
-font-size:22px;
-font-weight:bold;
-text-shadow:0 0 5px black;
+#startBtn:hover {
+  transform: scale(1.1);
 }
 
-#hud{
-position:absolute;
-top:20px;
-left:20px;
-font-size:22px;
-color:white;
-text-shadow:0 0 5px black;
+#bestTime {
+  margin-bottom: 100px;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-shadow: 0 0 5px black;
 }
 
-#countdown{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-size:80px;
-color:white;
-display:none;
-z-index:20;
-text-shadow:0 0 10px black;
+#hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 22px;
+  color: white;
+  text-shadow: 0 0 5px black;
 }
 
-#gameOverBox{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:white;
-padding:30px;
-border-radius:10px;
-text-align:center;
-display:none;
-z-index:20;
+#countdown {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  color: white;
+  display: none;
+  z-index: 20;
+  text-shadow: 0 0 10px black;
 }
 
-#restartBtn{
-padding:10px 20px;
-font-size:18px;
-cursor:pointer;
+#gameOverBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+  z-index: 20;
 }
 
-#time{
+#restartBtn {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#time {
   color: black;
 }
