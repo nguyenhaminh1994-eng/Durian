@@ -1,216 +1,184 @@
 const game = document.getElementById("game");
 const player = document.getElementById("player");
-const startScreen = document.getElementById("startScreen");
+
 const startBtn = document.getElementById("startBtn");
+const startScreen = document.getElementById("startScreen");
+
 const timeEl = document.getElementById("time");
-const bestTimeEl = document.getElementById("bestTime");
-const countdownEl = document.getElementById("countdown");
+const finalTimeEl = document.getElementById("finalTime");
 
 const gameOverBox = document.getElementById("gameOverBox");
-const finalTimeEl = document.getElementById("finalTime");
 const restartBtn = document.getElementById("restartBtn");
 
-const gameWidth = game.offsetWidth;
+const countdownEl = document.getElementById("countdown");
+const bestTimeEl = document.getElementById("bestTime");
 
-let playerX = gameWidth / 2;
-let speed = 4;
-let gameOver = true;
+let playerX = window.innerWidth / 2;
+
+let obstacles = [];
+
+let gameRunning = false;
+
 let startTime = 0;
-let animationId;
-let spawnTimer;
 
-// BEST TIME
-let bestTime = localStorage.getItem("bestTime") || 0;
-bestTimeEl.innerText = `Best: ${Number(bestTime).toFixed(2)}s`;
+let bestTime = Number(localStorage.getItem("bestTime")) || 0;
+bestTimeEl.innerText = `Best: ${bestTime.toFixed(2)}s`;
 
-// TOUCH CONTROL
-let startX = 0;
-game.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
+player.style.left = playerX + "px";
+
+function movePlayer(x){
+if(!gameRunning) return;
+
+playerX = x - 40; // 40 = nửa kích thước player (80px)
+player.style.left = playerX + "px";
+}
+
+/* điều khiển bằng chuột */
+document.addEventListener("mousemove", e=>{
+movePlayer(e.clientX);
 });
 
-game.addEventListener("touchmove", e => {
-  if (gameOver) return;
-  let dx = e.touches[0].clientX - startX;
-  playerX += dx * 0.25;
-  startX = e.touches[0].clientX;
+/* điều khiển bằng chạm màn hình */
+document.addEventListener("touchmove", e=>{
+movePlayer(e.touches[0].clientX);
 });
 
-// PC CONTROL
-document.addEventListener("keydown", e => {
-  if (gameOver) return;
-  if (e.key === "ArrowLeft") playerX -= 18;
-  if (e.key === "ArrowRight") playerX += 18;
+startBtn.onclick = ()=>{
+startScreen.style.display="none";
+countdown();
+};
+
+restartBtn.onclick = ()=>{
+location.reload();
+};
+
+function countdown(){
+
+let count = 3;
+countdownEl.style.display="block";
+countdownEl.innerText = count;
+
+let timer = setInterval(()=>{
+
+count--;
+countdownEl.innerText = count;
+
+if(count<=0){
+clearInterval(timer);
+countdownEl.style.display="none";
+startGame();
+}
+
+},1000);
+
+}
+
+function startGame(){
+
+gameRunning = true;
+
+startTime = Date.now();
+
+spawnLoop();
+
+gameLoop();
+
+}
+
+function spawnLoop(){
+
+if(!gameRunning) return;
+
+spawnObstacle();
+
+setTimeout(spawnLoop,800 + Math.random()*600);
+
+}
+
+function spawnObstacle(){
+
+for(let i=0;i<1;i++){   // số boom spawn
+
+const obstacle = document.createElement("div");
+
+obstacle.classList.add("obstacle");
+
+obstacle.style.left = Math.random() * (window.innerWidth-60) + "px";
+
+game.appendChild(obstacle);
+
+obstacles.push(obstacle);
+
+}
+}
+
+function gameLoop(){
+
+if(!gameRunning) return;
+
+let now = Date.now();
+
+let time = (now - startTime)/1000;
+
+timeEl.innerText = "Time: " + time.toFixed(2) + "s";
+
+obstacles.forEach((obs,index)=>{
+
+let top = obs.offsetTop;
+
+obs.style.top = top + 7 + "px";
+
+if(checkCollision(player,obs)){
+
+endGame(time);
+
+}
+
+if(top > window.innerHeight){
+
+obs.remove();
+obstacles.splice(index,1);
+
+}
+
 });
 
-// START BUTTON
-startBtn.addEventListener("click", startGame);
+requestAnimationFrame(gameLoop);
 
-// RESTART BUTTON
-restartBtn.addEventListener("click", () => {
-  gameOverBox.style.display = "none";
-  startGame();
-});
-
-
-// =======================
-// START GAME
-// =======================
-function startGame() {
-  startScreen.style.display = "none";
-  player.style.display = "block";
-
-  gameOverBox.style.display = "none";
-
-  document.querySelectorAll(".obstacle").forEach(o => o.remove());
-  clearTimeout(spawnTimer);
-  cancelAnimationFrame(animationId);
-
-  playerX = gameWidth / 2;
-  speed = 4;
-  gameOver = true;
-
-  countdown();
 }
 
+function checkCollision(a,b){
 
-// =======================
-// COUNTDOWN
-// =======================
-function countdown() {
-  let count = 3;
-  countdownEl.style.display = "flex";
-  countdownEl.innerText = count;
+const r1 = a.getBoundingClientRect();
+const r2 = b.getBoundingClientRect();
 
-  const timer = setInterval(() => {
-    count--;
+return !(
 
-    if (count > 0) {
-      countdownEl.innerText = count;
-    } else {
-      clearInterval(timer);
-      countdownEl.innerText = "GO!";
+r1.top > r2.bottom ||
+r1.bottom < r2.top ||
+r1.left > r2.right ||
+r1.right < r2.left
 
-      setTimeout(() => {
-        countdownEl.style.display = "none";
-        startPlay();
-      }, 500);
-    }
-  }, 1000);
+);
+
 }
 
+function endGame(time){
 
-// =======================
-// START PLAY
-// =======================
-function startPlay() {
-  gameOver = false;
-  startTime = performance.now();
-  spawnLoop();
-  update();
+gameRunning = false;
+
+finalTimeEl.innerText = time.toFixed(2);
+
+gameOverBox.style.display="block";
+
+if(time > bestTime){
+
+bestTime = time;
+
+localStorage.setItem("bestTime",bestTime);
+
+bestTimeEl.innerText = `Best: ${bestTime.toFixed(2)}s`;
+
 }
 
-
-// =======================
-// OBSTACLE LOOP
-// =======================
-function spawnLoop() {
-  if (gameOver) return;
-  spawnObstacle();
-  spawnTimer = setTimeout(spawnLoop, 800);
-}
-
-
-// =======================
-// CREATE OBSTACLE
-// =======================
-function spawnObstacle() {
-  const obs = document.createElement("div");
-  obs.className = "obstacle";
-  obs.style.left = Math.random() * (gameWidth - 48) + "px";
-  game.appendChild(obs);
-
-  let y = -32;
-
-  const fall = setInterval(() => {
-    if (gameOver) {
-      clearInterval(fall);
-      obs.remove();
-      return;
-    }
-
-    y += speed;
-    obs.style.top = y + "px";
-
-    // COLLISION
-    const p = player.getBoundingClientRect();
-    const o = obs.getBoundingClientRect();
-
-    if (
-      p.left < o.right &&
-      p.right > o.left &&
-      p.top < o.bottom &&
-      p.bottom > o.top
-    ) {
-      endGame();
-    }
-
-    // REMOVE IF OUTSIDE
-    if (y > window.innerHeight) {
-      clearInterval(fall);
-      obs.remove();
-      speed += 0.15;
-    }
-
-  }, 16);
-}
-
-
-// =======================
-// UPDATE PLAYER + TIME
-// =======================
-function update() {
-  if (gameOver) return;
-
-  playerX = Math.max(0, Math.min(gameWidth - player.offsetWidth, playerX));
-  player.style.left = playerX + "px";
-
-  const currentTime = (performance.now() - startTime) / 1000;
-  timeEl.innerText = `Time: ${currentTime.toFixed(2)}s`;
-
-  animationId = requestAnimationFrame(update);
-}
-
-
-// =======================
-// GAME OVER
-// =======================
-function endGame() {
-  if (gameOver) return;
-
-  gameOver = true;
-  cancelAnimationFrame(animationId);
-  clearTimeout(spawnTimer);
-
-  const finalTime = (performance.now() - startTime) / 1000;
-
-  // SAVE BEST
-  if (finalTime > bestTime) {
-    bestTime = finalTime;
-    localStorage.setItem("bestTime", bestTime);
-  }
-
-  bestTimeEl.innerText = `Best: ${bestTime.toFixed(2)}s`;
-
-  // HIỆN GAME OVER
-  finalTimeEl.innerText = finalTime.toFixed(2);
-
-  // ✅ BẮT BUỘC THÊM 2 DÒNG NÀY
-  gameOverBox.style.display = "flex";
-  gameOverBox.style.zIndex = "9999";
-_toggleDebug();
-}
-
-function _toggleDebug(){
-  console.log("GAME OVER BOX SHOWING");
 }

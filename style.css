@@ -1,159 +1,107 @@
-body {
-  margin: 0;
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  overflow: hidden;
-  touch-action: none;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+body{
+margin:0;
+overflow:hidden;
+font-family:Arial;
 }
 
-#game {
-  position: relative;
-  width: 100vw;
-  max-width: 420px;
-  height: 100vh;
-  margin: 0 auto;
-  background: #111;
+#game{
+position:relative;
+width:100vw;
+height:100vh;
+overflow:hidden;
+background:url("img/BG PLAY (INSIDE).png") center/cover no-repeat;
 }
 
-/* PLAYER */
-#player {
-  position: absolute;
-  bottom: 70px;
-  width: 21vw;
-  max-width: 64px;
-  height: 21vw;
-  max-height: 64px;
-
-  background-image: url("img/player.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-
-  left: 50%;
-  transform: translateX(-50%);
-  display: none;
+#player{
+position:absolute;
+width:70px;
+height:70px;
+bottom:50px;
+left:50%;
+transform:translateX(-50%);
+background:url("img/ICON DURIAN.png") center/contain no-repeat;
 }
 
-/* OBSTACLE */
-.obstacle {
-  position: absolute;
-  top: -30px;
-  width: 12vw;
-  max-width: 48px;
-  height: 12vw;
-  max-height: 48px;
-  background: linear-gradient(135deg, #ff5f6d, #ff2d55);
-  border-radius: 6px;
+.obstacle{
+position:absolute;
+width:60px;
+height:60px;
+top:-80px;
+background:url("img/ICON BOOM.png") center/contain no-repeat;
 }
 
-/* START SCREEN */
-#startScreen {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
-  gap: 16px;
+#startScreen{
+position:absolute;
+width:100%;
+height:100%;
+background:url("img/BG START (OUTSIDE).png") center/cover no-repeat;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:20px;
+z-index:10;
 }
 
-#startScreen h1 {
-  font-size: 28px;
-  letter-spacing: 2px;
-  margin: 0;
+#startBtn{
+margin-top: 300px;
+width:140px;
+cursor:pointer;
+transition:0.2s;
 }
 
-#startScreen p {
-  font-size: 14px;
-  opacity: 0.8;
+#startBtn:hover{
+transform:scale(1.1);
 }
 
-/* BUTTON */
-#startBtn {
-  padding: 14px 36px;
-  font-size: 16px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #00ffd5, #00aaff);
-  color: #000;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 8px 30px rgba(0,255,213,0.35);
+#bestTime{
+margin-bottom: 100px;
+color:white;
+font-size:22px;
+font-weight:bold;
+text-shadow:0 0 5px black;
 }
 
-#startBtn:active {
-  transform: scale(0.96);
+#hud{
+position:absolute;
+top:20px;
+left:20px;
+font-size:22px;
+color:white;
+text-shadow:0 0 5px black;
 }
 
-/* HUD */
-#hud {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  font-size: 15px;
+#countdown{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:80px;
+color:white;
+display:none;
+z-index:20;
+text-shadow:0 0 10px black;
 }
 
-#bestTime {
-  font-size: 13px;
-  opacity: 0.8;
+#gameOverBox{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:30px;
+border-radius:10px;
+text-align:center;
+display:none;
+z-index:20;
 }
 
-/* COUNTDOWN */
-#countdown {
-  position: absolute;
-  inset: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  font-size: 64px;
-  font-weight: 700;
-  color: white;
-  background: rgba(0,0,0,0.4);
-  letter-spacing: 4px;
-  z-index: 10;
+#restartBtn{
+padding:10px 20px;
+font-size:18px;
+cursor:pointer;
 }
 
-/* GAME OVER OVERLAY */
-#gameOverBox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-  z-index: 9999; /* FIX */
-}
-
-
-#gameOverBox h2 {
-  color: white;
-  font-size: 28px;
-  margin: 0;
-}
-
-#gameOverBox p {
-  color: white;
-  font-size: 18px;
-  margin: 12px 0;
-}
-
-#restartBtn {
-  padding: 12px 22px;
-  border: none;
-  border-radius: 14px;
-  background: limegreen;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-#restartBtn:active {
-  transform: scale(0.95);
+#time{
+  color: black;
 }
